@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>🧠 Live Code Editor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body { display: flex; flex-direction: column; height: 100vh; margin: 0; font-family: sans-serif; }
+    textarea { flex: 1; width: 100%; font-family: monospace; padding: 10px; border: none; border-top: 1px solid #ccc; resize: none; }
+    #editor { display: grid; grid-template-columns: 1fr 1fr 1fr; height: 50%; }
+    iframe { flex: 1; width: 100%; border: none; height: 50%; border-top: 2px solid #000; }
+    h2 { margin: 5px; padding: 10px; background: #333; color: #fff; text-align: center; }
+  </style>
+</head>
+<body>
+
+<h2>🛠️ Live HTML/CSS/JS Code Editor + Preview</h2>
+
+<div id="editor">
+  <textarea id="html" placeholder="Write HTML here...">&lt;h1&gt;Hello Vishal!&lt;/h1&gt;</textarea>
+  <textarea id="css" placeholder="Write CSS here...">body { font-family: sans-serif; color: red; }</textarea>
+  <textarea id="js" placeholder="Write JS here...">console.log("JS Loaded!");</textarea>
+</div>
+
+<iframe id="preview"></iframe>
+
+<script>
+function updatePreview() {
+  const html = document.getElementById("html").value;
+  const css = `<style>${document.getElementById("css").value}</style>`;
+  const js = `<script>${document.getElementById("js").value}<\/script>`;
+  const output = html + css + js;
+  const previewFrame = document.getElementById("preview");
+  previewFrame.srcdoc = output;
+}
+
+["html", "css", "js"].forEach(id => {
+  document.getElementById(id).addEventListener("input", updatePreview);
+});
+
+window.onload = updatePreview;
+</script>
+
+</body>
+</html>
