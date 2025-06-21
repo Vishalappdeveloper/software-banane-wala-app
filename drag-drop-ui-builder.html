@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Drag & Drop UI Builder</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+    }
+    #toolbox, #canvas {
+      background: white;
+      border: 1px solid #ccc;
+      padding: 10px;
+      width: 45%;
+      min-height: 400px;
+    }
+    #toolbox {
+      border: 2px dashed #888;
+    }
+    .tool {
+      padding: 10px;
+      margin: 10px 0;
+      background: #d0eaff;
+      cursor: grab;
+    }
+    #canvas .tool {
+      cursor: default;
+    }
+    h2 { margin-top: 0; }
+  </style>
+</head>
+<body>
+
+<div id="toolbox">
+  <h2>🧰 Toolbox</h2>
+  <div class="tool" draggable="true" ondragstart="drag(event)" data-type="button">🔘 Button</div>
+  <div class="tool" draggable="true" ondragstart="drag(event)" data-type="input">🔤 Input</div>
+  <div class="tool" draggable="true" ondragstart="drag(event)" data-type="label">🏷️ Label</div>
+</div>
+
+<div id="canvas" ondragover="allowDrop(event)" ondrop="drop(event)">
+  <h2>🖼️ Your App Canvas</h2>
+  <p><i>यहाँ components छोड़ें...</i></p>
+</div>
+
+<script>
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+function drag(ev) {
+  ev.dataTransfer.setData("type", ev.target.getAttribute("data-type"));
+}
+
+function drop(ev) {
+  ev.preventDefault();
+  const type = ev.dataTransfer.getData("type");
+  let el;
+
+  if (type === "button") {
+    el = document.createElement("button");
+    el.textContent = "Click Me";
+  } else if (type === "input") {
+    el = document.createElement("input");
+    el.placeholder = "Enter text";
+  } else if (type === "label") {
+    el = document.createElement("label");
+    el.textContent = "Label:";
+  }
+
+  if (el) {
+    el.className = "tool";
+    document.getElementById("canvas").appendChild(el);
+  }
+}
+</script>
+
+</body>
+</html>
