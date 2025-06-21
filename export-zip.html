@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Export Project as ZIP</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.0/jszip.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      margin: 10px 0;
+      font-family: monospace;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>📦 Export Code as ZIP</h2>
+
+<label>HTML:</label>
+<textarea id="htmlCode">&lt;h1&gt;Hello App&lt;/h1&gt;</textarea>
+
+<label>CSS:</label>
+<textarea id="cssCode">body { font-family: sans-serif; }</textarea>
+
+<label>JavaScript:</label>
+<textarea id="jsCode">console.log("Hello!");</textarea>
+
+<br/>
+<button onclick="exportZip()">📥 Download ZIP</button>
+
+<script>
+function exportZip() {
+  const zip = new JSZip();
+
+  const html = document.getElementById("htmlCode").value;
+  const css = document.getElementById("cssCode").value;
+  const js = document.getElementById("jsCode").value;
+
+  zip.file("index.html", html);
+  zip.file("style.css", css);
+  zip.file("script.js", js);
+
+  zip.generateAsync({ type: "blob" }).then(function(content) {
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(content);
+    link.download = "my-app.zip";
+    link.click();
+  });
+}
+</script>
+
+</body>
+</html>
