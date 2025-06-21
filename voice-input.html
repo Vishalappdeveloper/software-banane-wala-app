@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Voice Input - App Idea</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    button { padding: 10px 20px; font-size: 16px; }
+    #result { margin-top: 20px; font-size: 18px; background: #f0f0f0; padding: 15px; }
+  </style>
+</head>
+<body>
+  <h2>🎤 बोलकर App Idea बताएं</h2>
+  <button onclick="startListening()">🎙️ बोलना शुरू करें</button>
+  <div id="result">आपकी बात यहां दिखेगी...</div>
+
+  <script>
+    function startListening() {
+      const resultDiv = document.getElementById("result");
+
+      if (!('webkitSpeechRecognition' in window)) {
+        resultDiv.innerText = "Speech Recognition आपके ब्राउज़र में सपोर्ट नहीं करता।";
+        return;
+      }
+
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = 'hi-IN'; // हिंदी में बोलने के लिए
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      recognition.start();
+
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        resultDiv.innerText = `🗣️ आपने कहा: ${transcript}`;
+      };
+
+      recognition.onerror = function(event) {
+        resultDiv.innerText = '❌ Error: ' + event.error;
+      };
+
+      recognition.onend = function() {
+        console.log("Recording ended.");
+      };
+    }
+  </script>
+</body>
+</html>
