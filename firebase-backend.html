@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Save to Firebase</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+    textarea { width: 100%; height: 200px; margin-top: 10px; }
+    button { margin-top: 10px; padding: 10px 20px; }
+  </style>
+</head>
+<body>
+
+<h2>☁️ Firebase Cloud Storage (Save/Load UI)</h2>
+
+<textarea id="projectData" placeholder="Your HTML/UI Code"></textarea><br/>
+<button onclick="saveToFirebase()">💾 Save</button>
+<button onclick="loadFromFirebase()">📂 Load</button>
+<div id="status"></div>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    appId: "YOUR_APP_ID"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const auth = firebase.auth();
+
+  // Optional: Force Anonymous Auth if needed
+  auth.signInAnonymously().catch(console.error);
+
+  function saveToFirebase() {
+    const html = document.getElementById("projectData").value;
+    db.collection("projects").doc("my-first-ui").set({
+      htmlCode: html,
+      timestamp: new Date()
+    })
+    .then(() => status.innerText = "✅ Project saved to Firebase!")
+    .catch(err => status.innerText = "❌ Error: " + err.message);
+  }
+
+  function loadFromFirebase() {
+    db.collection("projects").doc("my-first-ui").get()
+      .then(doc => {
+        if (doc.exists) {
+          document.getElementById("projectData").value = doc.data().htmlCode;
+          status.innerText = "📥 Project loaded.";
+        } else {
+          status.innerText = "❌ No project found.";
+        }
+      })
+      .catch(err => status.innerText = "❌ Error: " + err.message);
+  }
+</script>
+
+</body>
+</html>
