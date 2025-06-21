@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>📱 APK Export System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+    textarea { width: 100%; height: 100px; font-family: monospace; margin-top: 10px; }
+    button { padding: 10px 20px; margin-top: 10px; }
+    .step { margin: 20px 0; padding: 15px; background: #fff; border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+
+<h2>📱 Final APK Export System</h2>
+
+<div class="step">
+  <h3>Step 1: Paste Your App Code</h3>
+  <textarea id="htmlCode" placeholder="Paste your final HTML code here..."></textarea>
+</div>
+
+<div class="step">
+  <h3>Step 2: Download Android WebView Source Code (.zip)</h3>
+  <button onclick="downloadZip()">📥 Generate ZIP</button>
+</div>
+
+<div class="step">
+  <h3>Step 3: Build APK Using:</h3>
+  <ul>
+    <li>📱 <b>AIDE</b> (Android App Development Environment)</li>
+    <li>💻 <b>Android Studio</b> (PC)</li>
+    <li>🔧 <b>Sketchware Pro</b> / <b>Kodular</b></li>
+  </ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.0/jszip.min.js"></script>
+<script>
+function downloadZip() {
+  const zip = new JSZip();
+  const html = document.getElementById('htmlCode').value || "<h1>Hello App</h1>";
+  const androidIndex = `
+    <html><body>
+    <script>
+      window.location.href = "file:///android_asset/index.html";
+    </script>
+    </body></html>`;
+
+  zip.file("app/index.html", html);
+  zip.file("app/AndroidManifest.xml", `
+    <manifest package="com.yourapp.htmlviewer" xmlns:android="http://schemas.android.com/apk/res/android">
+      <application android:label="My App">
+        <activity android:name=".MainActivity" android:exported="true">
+          <intent-filter>
+            <action android:name="android.intent.action.MAIN"/>
+            <category android:name="android.intent.category.LAUNCHER"/>
+          </intent-filter>
+        </activity>
+      </application>
+    </manifest>
+  `);
+
+  zip.file("app/MainActivity.java", `
+    package com.yourapp.htmlviewer;
+    import android.os.Bundle;
+    import android.webkit.WebView;
+    import androidx.appcompat.app.AppCompatActivity;
+    public class MainActivity extends AppCompatActivity {
+      protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        WebView webView = new WebView(this);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.loadUrl("file:///android_asset/index.html");
+        setContentView(webView);
+      }
+    }
+  `);
+
+  zip.generateAsync({ type: "blob" }).then(function(content) {
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(content);
+    link.download = "webview-app.zip";
+    link.click();
+  });
+}
+</script>
+
+</body>
+            </html>
+              
