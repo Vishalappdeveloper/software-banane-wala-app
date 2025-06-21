@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Chat - Software Banane Wala App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body { font-family: sans-serif; background: #f4f4f4; padding: 20px; }
+    #chat { max-width: 600px; margin: auto; }
+    textarea, input, button { width: 100%; margin-top: 10px; padding: 10px; font-size: 16px; }
+    .msg { background: #fff; padding: 10px; border: 1px solid #ccc; margin: 10px 0; border-radius: 5px; }
+    .user { background: #d0f0ff; }
+    .ai { background: #f0f0f0; }
+  </style>
+</head>
+<body>
+
+<div id="chat">
+  <h2>🤖 AI Code Assistant</h2>
+  <input type="text" id="apiKey" placeholder="🔑 OpenAI API Key यहाँ डालें" />
+  <textarea id="userInput" placeholder="HTML/CSS/JS से जुड़ा सवाल पूछिए..."></textarea>
+  <button onclick="sendToAI()">Send</button>
+  <div id="messages"></div>
+</div>
+
+<script>
+async function sendToAI() {
+  const question = document.getElementById('userInput').value.trim();
+  const apiKey = document.getElementById('apiKey').value.trim();
+  const msgDiv = document.getElementById('messages');
+
+  if (!apiKey || !question) {
+    alert("❌ कृपया API key और सवाल डालें");
+    return;
+  }
+
+  msgDiv.innerHTML += `<div class="msg user">👤 ${question}</div>`;
+
+  try {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + apiKey
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "user", content: question }]
+      })
+    });
+
+    const data = await response.json();
+    const reply = data.choices?.[0]?.message?.content || "❌ कोई उत्तर नहीं मिला";
+    msgDiv.innerHTML += `<div class="msg ai">🤖 ${reply}</div>`;
+    document.getElementById('userInput').value = "";
+
+  } catch (err) {
+    msgDiv.innerHTML += `<div class="msg ai">❌ Error: ${err.message}</div>`;
+  }
+}
+</script>
+
+</body>
+</html>
